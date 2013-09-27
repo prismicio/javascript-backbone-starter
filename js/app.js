@@ -9,11 +9,6 @@ define([
 ], 
 function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
-  /** Configure the links resolution rules **/
-  Helpers.configureLinkResolver(function(ctx, doc) {
-    return '#documents' + ctx.maybeRefParam + '/' + doc.id + '/' + doc.slug;
-  }) 
-
   var AppRouter = Backbone.Router.extend({
 
     /** Routes **/

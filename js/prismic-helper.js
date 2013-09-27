@@ -15,10 +15,6 @@ define([
       });
     },
 
-    configureLinkResolver: function(f) {
-      Helpers.linkResolverF = f;
-    },
-
     saveAccessTokenInSession: function(token) {
       if(token) {
         sessionStorage.setItem('ACCESS_TOKEN', token);
@@ -49,7 +45,7 @@ define([
           },
 
           linkResolver: function(doc) {
-            return Helpers.linkResolverF(ctx, doc);
+            return Configuration.linkResolver(ctx, doc);
           }
         }
         callback(ctx);
