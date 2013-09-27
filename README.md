@@ -1,4 +1,4 @@
-## Starter for client side single page app projects using BackboneJS
+## Starter for single page apps using BackboneJS
 
 This is a blank [BackboneJS](http://backbonejs.org/) project that will connect to any [prismic.io](https://prismic.io) repository. It uses the prismic.io JavaScript developement kit, and provide a few helpers to integrate with the Backbone framework.
 
