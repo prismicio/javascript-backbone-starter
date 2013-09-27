@@ -6,7 +6,7 @@ It is a single page application that load once, and then update the page DOM to 
 
 It uses the browser `sessionStorage` to store the access token when you interactively login to preview the future of your repository. Meaning that to preview another release than **Master**, a modern browser supporting HTML5 is required.
 
-## How to start?
+### How to start?
 
 Edit the `js/prismic-configuration.js` file to make the application point to the correct repository:
 
