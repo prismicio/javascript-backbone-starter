@@ -71,6 +71,12 @@ define([
       ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(results) {
         callback(_.first(results));
       });
+    },
+
+    getDocuments: function(ctx, ids, callback) {
+      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(results) {
+        callback(results);
+      });
     }
 
   };
