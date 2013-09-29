@@ -24,8 +24,7 @@ define([
     },
 
     getApiHome: function(callback) {
-      var token = sessionStorage.getItem('ACCESS_TOKEN');
-      Prismic.Api(Configuration.apiEndpoint + (token ? '?=access_token=' + token : ''), callback);
+      Prismic.Api(Configuration.apiEndpoint, callback, sessionStorage.getItem('ACCESS_TOKEN'));
     },
 
     buildContext: function(ref, callback) {
@@ -74,9 +73,22 @@ define([
     },
 
     getDocuments: function(ctx, ids, callback) {
-      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(results) {
-        callback(results);
-      });
+      if(ids && ids.length) {
+        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    },
+
+    getBookmark: function(ctx, bookmark, callback) {
+      var id = ctx.api.bookmarks[bookmark];
+      if(id) {
+        this.getDocument(ctx, id, callback);
+      } else {
+        callback();
+      }
     }
 
   };

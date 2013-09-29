@@ -28,7 +28,7 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       var router = this;
       
       // Submit the `everything` form, using the current ref
-      ctx.api.forms('everything').ref(ctx.ref).submit(function(results) {
+      ctx.api.form('everything').ref(ctx.ref).submit(function(results) {
 
         // Feed the template and update the DOM
         $('#container').html(Templates.DocumentsList({
@@ -72,7 +72,7 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     search: Helpers.prismicRoute(function(ctx, q) {
 
       // Submit the `everything` form, using the current ref
-      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(results) {
+      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(results) {
 
         // Feed the template and update the DOM
         $('#container').html(Templates.SearchResults({
