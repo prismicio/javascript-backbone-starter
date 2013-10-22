@@ -26,6 +26,8 @@ var Configuration = {
 }
 ```
 
+To get the OAuth configuration, go to the Applications panel in your repository settings, and create an OAuth application to allow interactive sign-in. Just create a new application, fill the application name and the callback URL (localhost URLs are always authorized, so at development time you can omit to fill the Callback URL field), and copy/paste the clientId & clientSecret tokens.
+
 Deploy the static files to any Web server. Alternatively you can also launch a local Web server using the `server.sh` script and open the home page at http://localhost:8000/.
 
 ### Publish your code
