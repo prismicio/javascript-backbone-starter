@@ -28,7 +28,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       var router = this;
       
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).submit(function(results) {
+      ctx.api.form('everything').ref(ctx.ref).submit(function(err, results) {
+        if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.DocumentsList({
@@ -37,7 +38,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
         }))
 
         // Handle Search form
-        $('#container form').submit(function(e) {
+        $('#container form').submit(function(err, e) {
+          if (err) { Configuration.onPrismicError(err); return; }
           e.preventDefault();
 
           router.navigate(
@@ -54,7 +56,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     detail: Helpers.prismicRoute(function(ctx, id, slug) {
       
       // Fetch the document for the given id
-      Helpers.getDocument(ctx, id, function(maybeResult) {
+      Helpers.getDocument(ctx, id, function(err, maybeResult) {
+        if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(
@@ -72,7 +75,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     search: Helpers.prismicRoute(function(ctx, q) {
 
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(results) {
+      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, results) {
+        if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.SearchResults({
@@ -88,7 +92,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     signin: function() {
 
       // Retrieve the prismic API
-      Helpers.getApiHome(function(Api) {
+      Helpers.getApiHome(function(err, Api) {
+        if (err) { Configuration.onPrismicError(err); return; }
         document.location =
           Api.data.oauthInitiate + 
           '?response_type=token' +

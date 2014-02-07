@@ -29,7 +29,8 @@ define([
 
     buildContext: function(ref, callback) {
       // retrieve the API
-      Helpers.getApiHome(function(api) {
+      Helpers.getApiHome(function(err, api) {
+        if (err) { Configuration.onPrismicError(err); return; }
         var ctx = {
           ref: (ref || api.data.master.ref),
           api: api,
@@ -67,18 +68,20 @@ define([
     },
 
     getDocument: function(ctx, id, callback) {
-      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(results) {
-        callback(_.first(results));
+      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(err, results) {
+        if (err) callback(err);
+        else callback(null, _.first(results));
       });
     },
 
     getDocuments: function(ctx, ids, callback) {
       if(ids && ids.length) {
-        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(results) {
-          callback(results);
+        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(err, results) {
+          if (err) callback(err);
+          else callback(null, results);
         });
       } else {
-        callback([]);
+        callback(null, []);
       }
     },
 
