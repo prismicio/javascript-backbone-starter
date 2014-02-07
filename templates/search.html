@@ -2,14 +2,14 @@
     <% if(docs.length > 0) { %>
         <%= docs.length %> documents
     <% } else { %>
-        No resulst found
+        No results found
     <% } %>
 </h2>
 
 <ul id="list">
     <% for(var i=0; i<docs.length; i++) { %>
         <li>
-            <a href="<%= ctx.linkResolver(docs[i]) %>">
+            <a href="<%= ctx.linkResolver(ctx, docs[i]) %>">
                 <%= docs[i].slug %>
             </a>
         </li>

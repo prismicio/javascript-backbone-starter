@@ -16,7 +16,7 @@
 <ul id="list">
     <% for(var i=0; i<docs.length; i++) { %>
         <li>
-            <a href="#documents<%= ctx.maybeRefParam %>/<%= docs[i].id %>/<%= docs[i].slug %>">
+            <a href="<%= ctx.linkResolver(ctx, docs[i]) %>">
                 <%= docs[i].slug %>
             </a>
         </li>
