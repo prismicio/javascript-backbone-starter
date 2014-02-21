@@ -28,12 +28,12 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       var router = this;
       
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).submit(function(err, results) {
+      ctx.api.form('everything').ref(ctx.ref).submit(function(err, documents) {
         if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.DocumentsList({
-          docs: results,
+          docs: documents,
           ctx: ctx
         }))
 
@@ -75,12 +75,12 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     search: Helpers.prismicRoute(function(ctx, q) {
 
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, results) {
+      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, docs) {
         if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.SearchResults({
-          docs: results,
+          docs: docs,
           ctx: ctx
         }))
 

@@ -68,17 +68,17 @@ define([
     },
 
     getDocument: function(ctx, id, callback) {
-      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(err, results) {
+      ctx.api.forms('everything').ref(ctx.ref).query('[[:d = at(document.id, "' + id + '")]]').submit(function(err, documents) {
         if (err) callback(err);
-        else callback(null, _.first(results));
+        else callback(null, _.first(documents.results));
       });
     },
 
     getDocuments: function(ctx, ids, callback) {
       if(ids && ids.length) {
-        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(err, results) {
+        ctx.api.forms('everything').ref(ctx.ref).query('[[:d = any(document.id, [' + _(ids).map(function(id) { return '"' + id + '"';}).join(',') + '])]]').submit(function(err, documents) {
           if (err) callback(err);
-          else callback(null, results);
+          else callback(null, documents.results);
         });
       } else {
         callback(null, []);
