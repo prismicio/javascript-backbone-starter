@@ -11,7 +11,6 @@ define([
       Helpers.buildContext(maybeRef, function(ctx) {
         setup(ctx);
       });
-      console.log('layout')
     },
 
     saveAccessTokenInSession: function(token) {
