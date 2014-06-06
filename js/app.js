@@ -163,7 +163,6 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       e.preventDefault();
       var newRef = this.$el.find('select').val();
       document.location = document.location.href.replace(/#.*/, '') + (newRef ? '#~' + newRef : '#');
-      document.location.reload();
     },
 
     signout: function(e) {
