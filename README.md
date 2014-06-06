@@ -61,6 +61,29 @@ You can find out [how to get started with prismic.io](https://developers.prismic
 
 You'll find more information about how to use the development kit included in this starter project, by reading [its README file](https://github.com/prismicio/javascript-kit/blob/master/README.md).
 
+### Specifics and helpers of the Backbone.js starter project
+
+There are several places in this project where you'll be able to find helpful helpers of many kinds. You may want to learn about them in order to know your starter project better, or to take those that you think might be useful to you in order to integrate prismic.io in an existing app.
+
+ * in `js/prismic-configuration.js`:
+   * this is where you set you API endpoint and security to access your repository's API;
+   * you will also find the linkResolver closure that gets passed around to resolve your links (read more in the last paragraph of our [API documentation](https://developers.prismic.io/documentation/UjBe8bGIJ3EKtgBZ/api-documentation));
+   * you will also find the closure that gets executed when the API returns an error.
+ * in `js/prismic-helper.js`:
+   * the most useful helper is `prismicRoute`, that every controller of a page using prismic.io will start with, and which initializes everything (the Api object, the context, ...). It relies on other functions of internal use: `buildContext`, `getApiHome`, `saveAccessTokenInSession`.
+   * `setupLayout` is called in the main `run` function of `app.js`, and sets up the layout (header and footer).
+   * and you get a few extra helpers for free to make it easier to perform content queries that tend to come back often: `getDocument(ctx, id, callback)`, `getDocuments(ctx, ids, callback)`, `getBookmark(ctx, bookmark, callback)` (feel free to add yours!)
+ * in `js/main.js`:
+   * the configuration of require.js
+   * and launching the `run()` method, which launches the app
+ * in `js/app.js`:
+   * you will find the `run()` method (today, it sets the layout up, and starts the Backbone.js app, but you can add stuff that needs to happen when the app starts)
+   * the definition of your routes and your controllers:
+     * `signin` and `authCallback`, that you shouldn't touch if you wish to use the content release preview feature
+     * `documents`, `detail`, `search`, which are here for the example, and that you can replace, or reuse
+   * two pre-packaged views: `PreviewToolbar` for the select box that allows to preview content releases, and `SearchEngineForm` for the form to perform searches; you can change them to match your views.
+ * in `templates/` and `templates.js`, the pre-packaged templates for this example (that you can replace, or reuse).
+
 ### Contribute to the starter project
 
 Contribution is open to all developer levels, read our "[Contribute to the official kits](https://developers.prismic.io/documentation/UszOeAEAANUlwFpp/contribute-to-the-official-kits)" documentation to learn more.
