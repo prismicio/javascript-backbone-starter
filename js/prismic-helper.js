@@ -7,12 +7,11 @@ define([
   var Helpers = {
 
     setupLayout: function(Router, setup) {
-      Router.once('route', function(e) {
-        var maybeRef = _.chain( /^[^~]*~([^\/]+).*$/.exec(document.location.hash) || [] ).rest().first().value();
-        Helpers.buildContext(maybeRef, function(ctx) {
-          setup(ctx);
-        });
+      var maybeRef = _.chain( /^[^~]*~([^\/]+).*$/.exec(document.location.hash) || [] ).rest().first().value();
+      Helpers.buildContext(maybeRef, function(ctx) {
+        setup(ctx);
       });
+      console.log('layout')
     },
 
     saveAccessTokenInSession: function(token) {
