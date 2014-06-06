@@ -22,3 +22,23 @@
         </li>
     <% } %>
 </ul>
+
+<hr>
+
+<% if(docs.total_pages > 1) { %>
+    <ul id="pagination">
+        <% if(docs.prev_page) { %>
+            <li><a href="#" data-page="<%= page-1 %>">Previous</a></li>
+        <% } %>
+        <% for(var i=1; i<=docs.total_pages; i++) { %>
+            <% if (page == i) { %>
+                <li><%= i %></li>
+            <% } else { %>
+                <li><a href="#" data-page="<%= i %>"><%= i %></a></li>
+            <% } %>
+        <% } %>
+        <% if(docs.next_page) { %>
+            <li><a href="#" data-page="<%= page+1 %>">Next</a></li>
+        <% } %>
+    </ul>
+<% } %>

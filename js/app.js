@@ -13,9 +13,9 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     /** Routes **/
     routes: {
-      '(~:ref)'                        : 'documents',
+      '(~:ref)(?p=:page)'              : 'documents',
       'documents(~:ref)/:id/:slug'     : 'detail',
-      'search(~:ref)/*q'               : 'search',
+      'search(~:ref)(/p=:page)/*q'               : 'search',
 
       // OAuth
       'signin'                         : 'signin',
@@ -24,18 +24,22 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     },
 
     /** List all documents **/
-    documents: Helpers.prismicRoute(function(ctx) {
+    documents: Helpers.prismicRoute(function(ctx, page) {
       var router = this;
-      
+      page = parseInt(page);
+
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).submit(function(err, documents) {
+      ctx.api.form('everything').page(page || 1).ref(ctx.ref).submit(function(err, documents) {
         if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.DocumentsList({
           docs: documents,
-          ctx: ctx
-        }))
+          ctx: ctx,
+          page: documents.page
+        }));
+
+        new PaginationHome({ el: $('#pagination') });
 
         // Handle Search form
         $('#container form').submit(function(err, e) {
@@ -72,17 +76,21 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     }),
 
     /** Search documents **/
-    search: Helpers.prismicRoute(function(ctx, q) {
+    search: Helpers.prismicRoute(function(ctx, page, q) {
+      page = parseInt(page);
 
       // Submit the `everything` form, using the current ref
-      ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, docs) {
+      ctx.api.form('everything').page(page || 1).ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, docs) {
         if (err) { Configuration.onPrismicError(err); return; }
 
         // Feed the template and update the DOM
         $('#container').html(Templates.SearchResults({
           docs: docs,
-          ctx: ctx
+          ctx: ctx,
+          page: docs.page
         }))
+
+        new PaginationSearch({ el: $('#pagination') });
 
       });
 
@@ -143,6 +151,49 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     }
 
   })
+
+  /* View for the pagination that is on the homepage (document list) */
+  var PaginationHome = Backbone.View.extend({
+
+    events:{
+      "click a" : "changePage"
+    },
+
+    changePage: function(e) {
+      e.preventDefault();
+      var pageParam = '?p='+$(e.target).attr('data-page');
+      if (/\?p=[0-9]+/.test(document.location.href)) { // if there's already a known page
+        document.location = document.location.href.replace(/\?p=[0-9]+/, pageParam);
+      }
+      else if (document.location.href.indexOf('#')>-1) { // if there's already a '#'
+        document.location = document.location.href+pageParam;
+      }
+      else { // otherwise
+        document.location = document.location.href+'#'+pageParam;
+      }
+    }
+
+  });
+
+  /* View for the pagination that is on the search result page */
+  var PaginationSearch = Backbone.View.extend({
+
+    events:{
+      "click a" : "changePage"
+    },
+
+    changePage: function(e) {
+      e.preventDefault();
+      var pageParam = '/p='+$(e.target).attr('data-page')+'/';
+      if (/search\/p=[0-9]+\//.test(document.location.href)) { // if there's already a known page
+        document.location = document.location.href.replace(/search\/p=[0-9]+\//, 'search'+pageParam);
+      }
+      else { // otherwise
+        document.location = document.location.href.replace(/search\//, 'search'+pageParam);
+      }
+    }
+
+  });
 
   return {
     run: function() {
