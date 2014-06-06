@@ -126,7 +126,8 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     events: {
       "change #selectRef select" :          "changeRef",
-      "submit #signout" :                   "signout"
+      "submit #signout" :                   "signout",
+      "submit form#searchengine" :          "search"
     },
 
     changeRef: function(e) {
@@ -140,6 +141,13 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       e.preventDefault();
       Helpers.saveAccessTokenInSession(null);
       document.location = document.location.href.replace(/#.*/, '');
+    },
+
+    search: function(e) {
+      e.preventDefault();
+      var q = this.$el.find('#q').val();
+      var maybeRef = this.$el.find('select').length>0 ? this.$el.find('select').val() : null;
+      document.location = document.location.href.replace(/#.*/, '') + '#/search'+(maybeRef ? '~'+maybeRef : '')+'/'+q;
     }
 
   })
