@@ -23,9 +23,33 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     },
 
+    /** Setup layout (used in some routes) **/
+    setupLayout : _.once(function() {
+      Helpers.setupLayout(this, function(ctx) {
+
+        $('header').html(
+          Templates.Header({
+            ctx: ctx
+          })
+        );
+
+        $('footer').html(
+          Templates.Footer({
+            ctx: ctx
+          })
+        );
+
+        new PreviewToolbar({ el: $('header') });
+
+      });
+    }),
+
     /** List all documents **/
     documents: Helpers.prismicRoute(function(ctx) {
       var router = this;
+
+      // Setup the layout
+      this.setupLayout();
       
       // Submit the `everything` form, using the current ref
       ctx.api.form('everything').ref(ctx.ref).submit(function(err, documents) {
@@ -54,6 +78,9 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     /** Display a document **/
     detail: Helpers.prismicRoute(function(ctx, id, slug) {
+
+      // Setup the layout
+      this.setupLayout();
       
       // Fetch the document for the given id
       Helpers.getDocument(ctx, id, function(err, maybeResult) {
@@ -73,6 +100,9 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     /** Search documents **/
     search: Helpers.prismicRoute(function(ctx, q) {
+
+      // Setup the layout
+      this.setupLayout();
 
       // Submit the `everything` form, using the current ref
       ctx.api.form('everything').ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, docs) {
@@ -134,7 +164,6 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
       e.preventDefault();
       var newRef = this.$el.find('select').val();
       document.location = document.location.href.replace(/#.*/, '') + (newRef ? '#~' + newRef : '#');
-      document.location.reload();
     },
 
     signout: function(e) {
@@ -156,25 +185,6 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     run: function() {
 
       var app = new AppRouter();
-
-      /** Called on first route to init the layout **/
-      Helpers.setupLayout(app, function(ctx) {
-
-        $('header').html(
-          Templates.Header({
-            ctx: ctx
-          })
-        );
-
-        $('footer').html(
-          Templates.Footer({
-            ctx: ctx
-          })
-        );
-
-        new PreviewToolbar({ el: $('header') });
-
-      });
 
       return Backbone.history.start();
     }
