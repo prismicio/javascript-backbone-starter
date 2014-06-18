@@ -23,9 +23,34 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     },
 
+    /** Setup layout (used in some routes) **/
+    setupLayout : _.once(function() {
+      Helpers.setupLayout(this, function(ctx) {
+
+        $('header').html(
+          Templates.Header({
+            ctx: ctx
+          })
+        );
+
+        $('footer').html(
+          Templates.Footer({
+            ctx: ctx
+          })
+        );
+
+        new PreviewToolbar({ el: $('header') });
+
+      });
+    }),
+
     /** List all documents **/
     documents: Helpers.prismicRoute(function(ctx, page) {
       var router = this;
+
+      // Setup the layout
+      this.setupLayout();
+
       page = parseInt(page);
 
       // Submit the `everything` form, using the current ref
@@ -58,6 +83,9 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     /** Display a document **/
     detail: Helpers.prismicRoute(function(ctx, id, slug) {
+
+      // Setup the layout
+      this.setupLayout();
       
       // Fetch the document for the given id
       Helpers.getDocument(ctx, id, function(err, maybeResult) {
@@ -78,6 +106,9 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     /** Search documents **/
     search: Helpers.prismicRoute(function(ctx, page, q) {
       page = parseInt(page);
+
+      // Setup the layout
+      this.setupLayout();
 
       // Submit the `everything` form, using the current ref
       ctx.api.form('everything').page(page || 1).ref(ctx.ref).query('[[:d = fulltext(document, "' + q + '")]]').submit(function(err, docs) {
@@ -134,20 +165,27 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
 
     events: {
       "change #selectRef select" :          "changeRef",
-      "submit #signout" :                   "signout"
+      "submit #signout" :                   "signout",
+      "submit form#searchengine" :          "search"
     },
 
     changeRef: function(e) {
       e.preventDefault();
       var newRef = this.$el.find('select').val();
       document.location = document.location.href.replace(/#.*/, '') + (newRef ? '#~' + newRef : '#');
-      document.location.reload();
     },
 
     signout: function(e) {
       e.preventDefault();
       Helpers.saveAccessTokenInSession(null);
       document.location = document.location.href.replace(/#.*/, '');
+    },
+
+    search: function(e) {
+      e.preventDefault();
+      var q = this.$el.find('#q').val();
+      var maybeRef = this.$el.find('select').length>0 ? this.$el.find('select').val() : null;
+      document.location = document.location.href.replace(/#.*/, '') + '#/search'+(maybeRef ? '~'+maybeRef : '')+'/'+q;
     }
 
   })
@@ -199,25 +237,6 @@ function($, _, Backbone, Prismic, Helpers, Configuration, Templates) {
     run: function() {
 
       var app = new AppRouter();
-
-      /** Called on first route to init the layout **/
-      Helpers.setupLayout(app, function(ctx) {
-
-        $('header').html(
-          Templates.Header({
-            ctx: ctx
-          })
-        );
-
-        $('footer').html(
-          Templates.Footer({
-            ctx: ctx
-          })
-        );
-
-        new PreviewToolbar({ el: $('header') });
-
-      });
 
       return Backbone.history.start();
     }
