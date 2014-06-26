@@ -1,3 +1,18 @@
 <article>
     <%= doc.asHtml(ctx) %>
 </article>
+
+<% if(doc.linkedDocuments.length>0) {%>
+    <hr>
+    <aside>
+        <ul>
+            <% _.each(doc.linkedDocuments, function(linkedDocument){ %>
+                <li>
+                    <a href="#documents/<%= linkedDocument.id %>/<%= linkedDocument.slug %>">
+                        <%= linkedDocument.slug %>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+    </aside>
+<% } %>
